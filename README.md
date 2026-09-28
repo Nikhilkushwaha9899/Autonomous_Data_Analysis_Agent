@@ -1,4 +1,4 @@
-# Autonomous Data Analyst Agent
+# Autonomous Data Analysis Agent
 
 An **Autonomous Data Analyst Agent** is an Agentic AI application that automatically analyzes structured datasets such as CSV and Excel files, performs statistical analysis, generates visualizations, identifies patterns and trends, and provides insights in natural language.
 
