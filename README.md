@@ -1,288 +1,652 @@
-# Autonomous Data Analysis Agent
+# Autonomous Retail Sales Analyst Agent
 
-An **Autonomous Data Analyst Agent** is an Agentic AI application that automatically analyzes structured datasets such as CSV and Excel files, performs statistical analysis, generates visualizations, identifies patterns and trends, and provides insights in natural language.
+An **Autonomous Retail Sales Analyst Agent** is an Agentic AI application designed specifically to analyze **retail sales data**.
 
-The main goal of this project is to reduce the amount of manual work required during data analysis. Instead of manually inspecting columns, calculating statistics, creating charts, and interpreting results, the AI agent can coordinate these tasks automatically.
+The system allows a user to upload a retail sales CSV file and ask questions about sales performance, product categories, regions, discounts, customer demographics, sales representatives, and sales trends.
 
----
-
-## 1. Project Overview
-
-Traditional data analysis usually requires a user to:
-
-1. Load the dataset.
-2. Understand the columns and data types.
-3. Check for missing values.
-4. Clean the data.
-5. Calculate statistics.
-6. Create visualizations.
-7. Identify trends and patterns.
-8. Interpret the results.
-9. Prepare a final report.
-
-The **Autonomous Data Analyst Agent** automates much of this workflow.
-
-The user uploads a dataset, and the agent determines what analysis is useful, uses appropriate data-analysis tools, and presents the results in an understandable form.
-
-### Example
-
-A user uploads:
-
-```text
-sales_data.csv
-```
-
-The system can analyze:
-
-* Number of records
-* Number of columns
-* Data types
-* Missing values
-* Duplicate records
-* Descriptive statistics
-* Maximum and minimum values
-* Average values
-* Category-wise performance
-* Trends
-* Correlations
-* Charts and graphs
-
-The AI can then generate an explanation such as:
-
-```text
-The Electronics category generated the highest revenue.
-Sales increased during the final quarter of the year.
-The dataset contains a small number of missing values
-in the customer-age column.
-```
+The AI agent understands the user's request, determines the appropriate analysis, uses data-analysis tools such as Pandas, generates visualizations when required, and provides the results in natural language.
 
 ---
 
-# 2. Project Theory
+# 1. Project Overview
 
-## What is Agentic AI?
+Traditional retail sales analysis requires a user to manually:
 
-Agentic AI refers to AI systems that can perform a sequence of actions to achieve a goal rather than simply generating a single response.
+1. Load the sales dataset.
+2. Understand the available attributes.
+3. Check data quality.
+4. Calculate sales statistics.
+5. Compare product categories.
+6. Analyze regional performance.
+7. Analyze customer demographics.
+8. Analyze sales representatives.
+9. Identify sales trends.
+10. Create charts and interpret the results.
+
+The **Autonomous Retail Sales Analyst Agent** automates these analytical tasks within the **retail sales domain**.
+
+The system is intentionally restricted to a predefined retail sales dataset structure rather than accepting completely unrelated domains.
+
+---
+
+# 2. Domain
+
+## Retail Sales Analytics
+
+The project focuses exclusively on **retail sales analysis**.
+
+The agent works with a predefined CSV structure containing **9 attributes**.
+
+### Dataset Attributes
+
+|  # | Attribute              | Description                                  | Data Type      |
+| -: | ---------------------- | -------------------------------------------- | -------------- |
+|  1 | `Sales_ID`             | Unique identifier for each sales transaction | String/Integer |
+|  2 | `Product_Category`     | Category of the product sold                 | Categorical    |
+|  3 | `Sales_Amount`         | Amount generated from the sale               | Numerical      |
+|  4 | `Discount`             | Discount applied to the sale                 | Numerical      |
+|  5 | `Sales_Region`         | Region where the sale occurred               | Categorical    |
+|  6 | `Date_of_Sale`         | Date on which the sale occurred              | Date           |
+|  7 | `Customer_Age`         | Age of the customer                          | Numerical      |
+|  8 | `Customer_Gender`      | Gender of the customer                       | Categorical    |
+|  9 | `Sales_Representative` | Representative responsible for the sale      | Categorical    |
+
+---
+
+# 3. Dataset Scope
+
+The system is designed specifically for the following data structure:
+
+```text
+Retail Sales Dataset
+        |
+        +-- Sales Information
+        |      +-- Sales_ID
+        |      +-- Sales_Amount
+        |      +-- Discount
+        |      +-- Date_of_Sale
+        |
+        +-- Product Information
+        |      +-- Product_Category
+        |
+        +-- Regional Information
+        |      +-- Sales_Region
+        |
+        +-- Customer Information
+        |      +-- Customer_Age
+        |      +-- Customer_Gender
+        |
+        +-- Representative Information
+               +-- Sales_Representative
+```
+
+The application can validate uploaded files against the expected retail-sales columns.
+
+If a user uploads a dataset that does not contain the required retail attributes, the system can notify the user that the dataset is outside the supported domain.
+
+---
+
+# 4. Problem Statement
+
+Retail businesses generate large amounts of sales data, but extracting useful information from this data often requires manual analysis.
+
+Users may need to manually calculate total sales, compare product categories, analyze regional performance, study discounts, examine customer demographics, evaluate sales representatives, and identify sales trends.
+
+This process can be time-consuming and requires knowledge of data-analysis tools.
+
+The **Autonomous Retail Sales Analyst Agent** addresses this problem by providing an AI-powered system that can understand natural-language questions, select appropriate analytical operations, execute them using data-analysis tools, generate visualizations, and explain the results.
+
+### One-line Problem Statement
+
+> **To develop an Agentic AI system that autonomously analyzes retail sales data, answers natural-language business questions, generates relevant visualizations, and provides meaningful sales insights using predefined retail sales attributes.**
+
+---
+
+# 5. What is Agentic AI?
+
+Agentic AI refers to AI systems that can perform a sequence of actions to achieve a particular goal instead of simply generating a single response.
 
 A traditional chatbot generally follows:
 
 ```text
-User → LLM → Response
+User
+ ↓
+LLM
+ ↓
+Response
 ```
 
-An agentic system can follow:
+An agentic system follows a more structured workflow:
 
 ```text
 User
-  ↓
+ ↓
 AI Agent
-  ↓
-Understand the task
-  ↓
-Plan actions
-  ↓
-Select tools
-  ↓
-Execute tools
-  ↓
-Analyze results
-  ↓
-Generate final response
+ ↓
+Understand Request
+ ↓
+Determine Required Analysis
+ ↓
+Select Appropriate Tool
+ ↓
+Execute Analysis
+ ↓
+Interpret Results
+ ↓
+Generate Final Response
 ```
 
-The agent can therefore interact with external tools and use their results while completing a task.
+For this project, the agent operates specifically within the **retail sales domain**.
 
 ---
 
-# 3. Why an AI Data Analyst Agent?
+# 6. Why an Autonomous Retail Sales Analyst?
 
-Large Language Models are good at understanding and explaining information, but they should not be relied upon for performing every numerical calculation themselves.
+A Large Language Model can understand questions and explain results, but numerical calculations should be performed using reliable data-analysis tools.
 
-Therefore, this project combines:
+Therefore, the project combines:
 
 ```text
 LLM
-+
+   +
 Agent Framework
-+
-Data Analysis Libraries
-+
-Visualization Libraries
+   +
+Pandas
+   +
+NumPy
+   +
+Visualization Tools
+   +
+Retail Sales Dataset
 ```
 
-The **Python tools perform calculations**, while the **LLM interprets and explains the results**.
+Python performs the actual calculations while the LLM interprets and explains the results.
 
 For example:
 
 ```text
+User
+ ↓
+"Which product category has the highest sales?"
+ ↓
+AI Agent
+ ↓
+Select Sales Analysis Tool
+ ↓
 Pandas
-   ↓
-Calculate average sales
-   ↓
-Return numerical result
-   ↓
+ ↓
+Group by Product_Category
+ ↓
+Calculate Sales_Amount
+ ↓
+Find Highest Value
+ ↓
 LLM
-   ↓
-Explain what the result means
+ ↓
+Explain Result
+ ↓
+User
 ```
 
-This makes the system more reliable than asking the LLM to calculate everything directly.
+This approach avoids relying on the LLM alone for numerical calculations.
 
 ---
 
-# 4. Main Objectives
+# 7. Main Objectives
 
 The main objectives of the project are:
 
-* Automate common data-analysis tasks.
-* Allow users to upload CSV and Excel datasets.
-* Automatically inspect datasets.
-* Detect missing and inconsistent data.
-* Generate statistical summaries.
-* Create useful visualizations.
-* Identify patterns and trends.
-* Provide natural-language insights.
-* Allow users to interact with their data using questions.
-* Demonstrate the practical use of Agentic AI.
+* Build an Agentic AI system for retail sales analysis.
+* Restrict the system to a predefined retail sales domain.
+* Accept a structured retail sales CSV dataset.
+* Validate the dataset structure.
+* Automatically inspect the retail dataset.
+* Detect missing values and duplicate records.
+* Perform statistical sales analysis.
+* Analyze product-category performance.
+* Analyze regional sales performance.
+* Analyze discount and sales relationships.
+* Analyze customer demographics.
+* Analyze sales representative performance.
+* Analyze sales trends over time.
+* Generate relevant visualizations.
+* Answer retail business questions using natural language.
+* Generate AI-based retail sales insights.
 
 ---
 
-# 5. Key Features
+# 8. Key Features
 
-## Dataset Upload
+## 8.1 Retail Dataset Upload
 
-Users can upload datasets such as:
-
-* CSV
-* Excel (`.xlsx`)
-
-## Automatic Dataset Understanding
-
-The system can identify:
-
-* Number of rows
-* Number of columns
-* Column names
-* Data types
-* Missing values
-* Duplicate records
-
-## Statistical Analysis
-
-The system can calculate:
-
-* Mean
-* Median
-* Minimum
-* Maximum
-* Standard deviation
-* Count
-* Correlation
-
-## Data Visualization
-
-The application can generate charts such as:
-
-* Bar charts
-* Line charts
-* Histograms
-* Scatter plots
-* Correlation plots
-
-## AI-generated Insights
-
-The LLM interprets the analysis results and explains:
-
-* Important trends
-* Unusual values
-* Relationships between variables
-* Significant observations
-
-## Conversational Data Analysis
-
-Users can ask questions such as:
+The user can upload the supported retail sales CSV file.
 
 ```text
-Which product generated the highest sales?
-
-What is the average revenue?
-
-Which month had the highest sales?
-
-Are there any missing values?
-
-Show me the relationship between sales and profit.
+Upload Retail Sales CSV
+          ↓
+Validate Columns
+          ↓
+Load Dataset
+          ↓
+Start Analysis
 ```
 
-The agent determines what analysis is required and uses the appropriate tool.
+The expected attributes are:
+
+```text
+Sales_ID
+Product_Category
+Sales_Amount
+Discount
+Sales_Region
+Date_of_Sale
+Customer_Age
+Customer_Gender
+Sales_Representative
+```
 
 ---
 
-# 6. System Architecture
+# 9. Dataset Validation
+
+Before performing analysis, the system checks whether the uploaded CSV contains the required attributes.
+
+### Required Columns
 
 ```text
-                 USER
-                   |
+Sales_ID
+Product_Category
+Sales_Amount
+Discount
+Sales_Region
+Date_of_Sale
+Customer_Age
+Customer_Gender
+Sales_Representative
+```
+
+If required columns are missing, the system can display an error such as:
+
+```text
+Invalid Dataset
+
+The uploaded file does not match the
+required Retail Sales dataset structure.
+```
+
+This ensures that the agent remains domain-specific.
+
+---
+
+# 10. Retail Sales Use Cases
+
+## Use Case 1 — Overall Sales Performance
+
+User asks:
+
+> "What is the total sales amount?"
+
+The agent analyzes:
+
+```text
+Sales_Amount
+```
+
+It can calculate:
+
+* Total sales
+* Average sales
+* Minimum sales
+* Maximum sales
+* Number of transactions
+
+---
+
+## Use Case 2 — Product Category Analysis
+
+User asks:
+
+> "Which product category generated the highest sales?"
+
+The agent uses:
+
+```text
+Product_Category
+Sales_Amount
+```
+
+Workflow:
+
+```text
+Product Category
+       ↓
+Group Sales
+       ↓
+Calculate Total
+       ↓
+Compare Categories
+       ↓
+Identify Highest
+       ↓
+Generate Answer
+```
+
+A bar chart can also be generated.
+
+---
+
+## Use Case 3 — Regional Sales Analysis
+
+User asks:
+
+> "Which region has the highest sales?"
+
+The agent analyzes:
+
+```text
+Sales_Region
+Sales_Amount
+```
+
+It can provide:
+
+* Total sales by region
+* Average sales by region
+* Number of transactions by region
+* Regional comparison chart
+
+---
+
+## Use Case 4 — Discount Analysis
+
+User asks:
+
+> "What is the relationship between discount and sales?"
+
+The agent analyzes:
+
+```text
+Discount
+Sales_Amount
+```
+
+It can calculate statistical relationships and generate a scatter plot.
+
+The system should distinguish **correlation from causation** and avoid claiming that a discount directly caused a change in sales unless the data and analysis support such a conclusion.
+
+---
+
+## Use Case 5 — Customer Demographic Analysis
+
+The dataset contains:
+
+```text
+Customer_Age
+Customer_Gender
+```
+
+The agent can answer:
+
+> "What is the average customer age?"
+
+> "Compare sales by customer gender."
+
+> "What age group has the highest sales?"
+
+Possible analysis includes:
+
+* Average customer age
+* Age distribution
+* Gender-wise sales
+* Sales by age groups
+
+---
+
+## Use Case 6 — Sales Representative Analysis
+
+User asks:
+
+> "Which sales representative generated the highest sales?"
+
+The agent analyzes:
+
+```text
+Sales_Representative
+Sales_Amount
+```
+
+It can generate:
+
+* Representative-wise sales
+* Average sales per representative
+* Number of transactions
+* Representative comparison chart
+
+---
+
+## Use Case 7 — Time-Based Sales Analysis
+
+User asks:
+
+> "Show the monthly sales trend."
+
+The agent uses:
+
+```text
+Date_of_Sale
+Sales_Amount
+```
+
+The date can be transformed into:
+
+```text
+Year
+Month
+Day
+```
+
+The agent can then analyze sales over time and generate line charts.
+
+---
+
+## Use Case 8 — Data Quality Analysis
+
+User asks:
+
+> "Check whether there are problems in my dataset."
+
+The agent checks:
+
+```text
+Missing Values
+      ↓
+Duplicate Sales_ID
+      ↓
+Invalid Sales_Amount
+      ↓
+Invalid Discount
+      ↓
+Invalid Customer_Age
+      ↓
+Invalid Dates
+      ↓
+Data Quality Report
+```
+
+---
+
+## Use Case 9 — Automatic Retail Insights
+
+This is the main autonomous use case.
+
+The user asks:
+
+> **"Analyze this retail dataset and give me the most important insights."**
+
+The agent determines which analyses are relevant.
+
+```text
+                  Retail Dataset
+                        ↓
+                  Analyst Agent
+                        ↓
+        ┌───────────────┼───────────────┐
+        ↓               ↓               ↓
+     Product          Region         Customer
+     Analysis         Analysis       Analysis
+        ↓               ↓               ↓
+        └───────────────┼───────────────┘
+                        ↓
+                 Time Analysis
+                        ↓
+                Discount Analysis
+                        ↓
+                  AI Interpretation
+                        ↓
+                 Final Retail Report
+```
+
+---
+
+# 11. Conversational Retail Analysis
+
+The application can provide a chat interface where users ask questions about the retail dataset.
+
+### Example Questions
+
+```text
+What is the total sales amount?
+
+Which product category has the highest sales?
+
+Which region performs best?
+
+Which sales representative generated the most sales?
+
+What is the average customer age?
+
+Compare sales by gender.
+
+Show monthly sales trends.
+
+What is the relationship between discount and sales?
+
+Find the top 5 sales transactions.
+
+Check the dataset for missing values.
+
+Analyze this dataset and give me the most important insights.
+```
+
+The agent determines the appropriate analysis and tool required for each question.
+
+---
+
+# 12. Agent Workflow
+
+The project's agent workflow is:
+
+```text
+                 User
                    ↓
-          +----------------+
-          |   Streamlit    |
-          |   Frontend     |
-          +-------+--------+
-                  |
-                  ↓
-          +----------------+
-          |    FastAPI     |
-          |    Backend     |
-          +-------+--------+
-                  |
-                  ↓
-          +----------------+
-          |  AI Analyst    |
-          |     Agent      |
-          +-------+--------+
-                  |
-                  ↓
-             LangGraph
-                  |
-       +----------+----------+
-       |          |          |
-       ↓          ↓          ↓
-    Pandas     NumPy     Visualization
-       |          |          |
-       +----------+----------+
-                  |
-                  ↓
-                LLM
-                  |
-                  ↓
-          AI-generated Report
+          Upload Retail CSV
+                   ↓
+           Validate Dataset
+                   ↓
+          Understand Dataset
+                   ↓
+        Receive User Question
+                   ↓
+             Analyst Agent
+                   ↓
+       Determine Required Analysis
+                   ↓
+          Select Appropriate Tool
+                   ↓
+       ┌───────────┼───────────┐
+       ↓           ↓           ↓
+    Pandas      NumPy      Visualization
+       ↓           ↓           ↓
+       └───────────┼───────────┘
+                   ↓
+             Analyze Results
+                   ↓
+                  LLM
+                   ↓
+          Generate Explanation
+                   ↓
+             Final Response
 ```
 
 ---
 
-# 7. Technology Stack
+# 13. System Architecture
 
-| Technology    | Purpose                         |
-| ------------- | ------------------------------- |
-| Python        | Main programming language       |
-| LangGraph     | Agent workflow                  |
-| LangChain     | LLM and tool integration        |
-| OpenAI API    | Large Language Model            |
-| Pandas        | Data manipulation and analysis  |
-| NumPy         | Numerical operations            |
-| Matplotlib    | Data visualization              |
-| Seaborn       | Statistical visualization       |
-| OpenPyXL      | Excel file processing           |
-| Streamlit     | User interface                  |
-| FastAPI       | Backend API                     |
-| Uvicorn       | FastAPI server                  |
-| python-dotenv | Environment variable management |
-| Git           | Version control                 |
-| GitHub        | Code repository                 |
+```text
+                    USER
+                      |
+                      ↓
+             +----------------+
+             |   Streamlit    |
+             |   Interface    |
+             +-------+--------+
+                     |
+                     ↓
+             +----------------+
+             |    FastAPI     |
+             |    Backend     |
+             +-------+--------+
+                     |
+                     ↓
+             +----------------+
+             | Retail Analyst |
+             |     Agent      |
+             +-------+--------+
+                     |
+                     ↓
+                LangGraph
+                     |
+          +----------+----------+
+          |          |          |
+          ↓          ↓          ↓
+       Pandas      NumPy   Visualization
+          |          |          |
+          +----------+----------+
+                     |
+                     ↓
+                   LLM
+                     |
+                     ↓
+             Retail Insights
+                     |
+                     ↓
+              Final Response
+```
 
 ---
 
-# 8. Prerequisites
+# 14. Technology Stack
+
+| Technology    | Purpose                          |
+| ------------- | -------------------------------- |
+| Python        | Main programming language        |
+| LangGraph     | Agent workflow and orchestration |
+| LangChain     | LLM and tool integration         |
+| OpenAI API    | Large Language Model             |
+| Pandas        | Retail data analysis             |
+| NumPy         | Numerical operations             |
+| Matplotlib    | Data visualization               |
+| Seaborn       | Statistical visualization        |
+| Streamlit     | User interface                   |
+| FastAPI       | Backend API                      |
+| Uvicorn       | FastAPI server                   |
+| python-dotenv | Environment variable management  |
+| Git           | Version control                  |
+| GitHub        | Code repository                  |
+
+---
+
+# 15. Prerequisites
 
 Before installing the project, make sure you have:
 
@@ -292,8 +656,9 @@ Before installing the project, make sure you have:
 * VS Code
 * Git
 * Internet connection
-* LLM API key
-* Basic knowledge of Python
+* OpenAI API key
+* Basic Python knowledge
+* Retail sales CSV dataset
 
 ### Recommended
 
@@ -303,22 +668,22 @@ Before installing the project, make sure you have:
 
 ### Hardware
 
-A dedicated GPU is **not required** when using a cloud-based LLM API.
+A dedicated GPU is not required when using a cloud-based LLM API.
 
 ---
 
-# 9. Installation
+# 16. Installation
 
 ## Step 1 — Clone the Repository
 
 ```bash
 git clone <your-github-repository-url>
-cd autonomous-data-analyst
+cd autonomous-retail-sales-agent
 ```
 
 ---
 
-## Step 2 — Create a Virtual Environment
+## Step 2 — Create Virtual Environment
 
 ```bash
 python -m venv venv
@@ -326,7 +691,7 @@ python -m venv venv
 
 ---
 
-## Step 3 — Activate the Virtual Environment
+## Step 3 — Activate Virtual Environment
 
 ### Windows CMD
 
@@ -340,11 +705,13 @@ venv\Scripts\activate
 venv\Scripts\Activate.ps1
 ```
 
-After activation, the terminal should show:
+After activation:
 
 ```text
 (venv)
 ```
+
+should appear in the terminal.
 
 ---
 
@@ -354,10 +721,10 @@ After activation, the terminal should show:
 pip install -r requirements.txt
 ```
 
-If `requirements.txt` does not exist yet:
+If the requirements file does not exist:
 
 ```bash
-pip install pandas numpy matplotlib seaborn openpyxl langgraph langchain langchain-core langchain-openai streamlit fastapi uvicorn python-dotenv
+pip install pandas numpy matplotlib seaborn langgraph langchain langchain-core langchain-openai streamlit fastapi uvicorn python-dotenv
 ```
 
 Then create the requirements file:
@@ -368,7 +735,7 @@ pip freeze > requirements.txt
 
 ---
 
-# 10. Environment Variables
+# 17. Environment Variables
 
 Create a `.env` file in the project root:
 
@@ -376,9 +743,9 @@ Create a `.env` file in the project root:
 OPENAI_API_KEY=your_api_key_here
 ```
 
-Do not share your API key publicly.
+Never share your API key publicly.
 
-Add `.env` to `.gitignore`:
+Add the following to `.gitignore`:
 
 ```text
 .env
@@ -388,10 +755,10 @@ __pycache__/
 
 ---
 
-# 11. Project Structure
+# 18. Project Structure
 
 ```text
-autonomous-data-analyst/
+autonomous-retail-sales-agent/
 │
 ├── venv/
 │
@@ -400,10 +767,11 @@ autonomous-data-analyst/
 │   ├── agent.py
 │   ├── analysis.py
 │   ├── visualization.py
+│   ├── validation.py
 │   └── prompts.py
 │
 ├── data/
-│   └── sample.csv
+│   └── retail_sales.csv
 │
 ├── .env
 ├── .gitignore
@@ -411,11 +779,11 @@ autonomous-data-analyst/
 └── README.md
 ```
 
-### File responsibilities
+### File Responsibilities
 
 ### `main.py`
 
-Runs the application and provides the user interface.
+Runs the Streamlit application and provides the user interface.
 
 ### `agent.py`
 
@@ -423,101 +791,122 @@ Contains the Agentic AI workflow and decision-making logic.
 
 ### `analysis.py`
 
-Contains Pandas and NumPy-based analysis functions.
+Contains Pandas and NumPy functions for retail sales analysis.
 
 ### `visualization.py`
 
-Contains functions for generating charts.
+Generates charts for retail sales data.
+
+### `validation.py`
+
+Checks whether the uploaded CSV matches the required retail sales structure.
 
 ### `prompts.py`
 
-Contains prompts and instructions used by the LLM.
+Contains instructions used by the LLM.
 
 ### `data/`
 
-Stores sample or temporary datasets.
+Contains the retail sales dataset used for development and testing.
 
 ---
 
-# 12. How the Agent Works
+# 19. Example Agent Tools
 
-The basic workflow is:
-
-```text
-1. User uploads dataset
-          ↓
-2. Agent reads dataset
-          ↓
-3. Agent understands the dataset
-          ↓
-4. Agent determines required analysis
-          ↓
-5. Agent selects appropriate tools
-          ↓
-6. Pandas/NumPy perform calculations
-          ↓
-7. Visualization tools create charts
-          ↓
-8. Results are provided to the LLM
-          ↓
-9. LLM interprets the results
-          ↓
-10. Final insights are displayed
-```
-
----
-
-# 13. Example Agent Tools
-
-The agent can have tools such as:
+The retail analyst agent can have tools such as:
 
 ```text
-analyze_dataset()
-calculate_statistics()
+analyze_sales()
+calculate_sales_statistics()
+analyze_product_categories()
+analyze_regions()
+analyze_discount()
+analyze_customer_demographics()
+analyze_sales_representatives()
+analyze_sales_trends()
 find_missing_values()
 find_duplicates()
-calculate_correlation()
 generate_chart()
-filter_data()
 ```
 
-The agent decides which tools are useful based on the user's request.
+The agent chooses the appropriate tool based on the user's question.
 
-For example:
+---
+
+# 20. Example Agent Execution
+
+### User:
 
 ```text
-User:
-"Which category has the highest sales?"
+Which product category has the highest sales?
+```
 
+### Agent:
+
+```text
+Understand request
         ↓
-
-Agent:
-Need category-wise sales analysis.
-
+Identify Product_Category
         ↓
-
-Pandas:
-Group data by category.
-
+Identify Sales_Amount
         ↓
-
-Calculation:
-Find category with maximum sales.
-
+Select Product Analysis Tool
         ↓
-
-LLM:
-Explain the result.
-
+Group by Product_Category
         ↓
+Calculate total Sales_Amount
+        ↓
+Find highest category
+        ↓
+Return result
+```
 
-User:
-Receives the answer.
+The LLM then explains the result to the user.
+
+---
+
+# 21. Example Dashboard
+
+The application can contain:
+
+```text
++------------------------------------------------+
+|       AUTONOMOUS RETAIL SALES ANALYST          |
++------------------------------------------------+
+
+Upload Retail CSV
+[ Choose File ]
+
+Dataset Overview
+--------------------------------
+Total Transactions
+Total Sales
+Average Sale
+Top Product Category
+
+--------------------------------
+
+Sales by Product Category
+[ Bar Chart ]
+
+Sales by Region
+[ Bar Chart ]
+
+Monthly Sales Trend
+[ Line Chart ]
+
+--------------------------------
+
+Ask the Retail Analyst
+
+[ Which region has the highest sales? ]
+
+[ Analyze Dataset ]
 ```
 
 ---
 
-# 14. Running the Application
+# 22. Running the Application
 
 Activate the virtual environment:
 
@@ -525,125 +914,145 @@ Activate the virtual environment:
 venv\Scripts\activate
 ```
 
-Run Streamlit:
+Run the application:
 
 ```bash
 streamlit run app/main.py
 ```
 
-The application will open in the browser.
+The application will open in your browser.
 
 ---
 
-# 15. Example Use Cases
+# 23. Advantages
 
-The system can be used for datasets involving:
-
-* Sales
-* Customers
-* Students
-* Finance
-* Marketing
-* Inventory
-* Employees
-* Products
-* Business operations
-
----
-
-# 16. Advantages
-
-* Reduces repetitive manual analysis.
-* Allows non-technical users to interact with datasets.
-* Automates multiple analysis steps.
-* Combines traditional data-analysis libraries with AI.
-* Provides natural-language explanations.
-* Can be extended with additional tools.
+* Focused on a clearly defined retail domain.
+* Automates repetitive retail sales analysis.
+* Allows natural-language interaction with sales data.
+* Uses Python tools for reliable numerical calculations.
+* Automatically selects appropriate analysis tools.
+* Generates useful visualizations.
+* Provides understandable AI-generated explanations.
 * Demonstrates practical Agentic AI concepts.
+* Has a clearly defined dataset structure.
+* Can be extended with additional retail analytics features.
 
 ---
 
-# 17. Limitations
+# 24. Limitations
 
-* Results depend on the quality of the uploaded dataset.
+* The system is restricted to the defined retail sales domain.
+* The uploaded dataset must follow the expected attribute structure.
+* Results depend on the quality and correctness of the dataset.
 * LLM-generated explanations may occasionally be incorrect.
-* API-based LLMs require internet access.
-* Large datasets may require additional processing strategies.
+* API-based LLM usage requires internet access.
 * API usage may incur costs.
 * Numerical calculations should be performed by Python tools rather than relying solely on the LLM.
+* The system does not automatically establish causal relationships from correlations.
 
 ---
 
-# 18. Future Enhancements
+# 25. Future Enhancements
 
 Possible future improvements include:
 
-* PDF report generation
-* Multiple-file analysis
-* Database connectivity
-* SQL query generation
-* Predictive analytics
-* Machine learning integration
-* Automated data cleaning
-* Advanced anomaly detection
+* PDF retail sales report generation
 * Interactive Plotly dashboards
-* Voice-based data analysis
-* Multi-agent data-analysis workflow
+* Advanced anomaly detection
+* Sales forecasting
+* Customer segmentation
+* Product recommendation
+* Automated data cleaning
+* Database integration
+* SQL-based retail analytics
+* Multi-agent retail analytics
+* Voice-based retail data analysis
+* Automated executive summaries
 
 ---
 
-# 19. Development Roadmap
+# 26. Development Roadmap
 
-### Phase 1 — Environment Setup
+## Phase 1 — Environment Setup
 
 * Install Python
 * Create virtual environment
 * Install dependencies
-* Configure API key
+* Configure OpenAI API key
+* Create project structure
 
-### Phase 2 — Data Analysis
+## Phase 2 — Retail Dataset
 
-* CSV upload
-* Excel upload
-* Dataset inspection
-* Missing-value detection
-* Statistical analysis
+* Prepare retail sales CSV
+* Define nine required attributes
+* Implement CSV upload
+* Validate dataset columns
+* Handle invalid files
 
-### Phase 3 — Visualization
+## Phase 3 — Retail Data Analysis
 
-* Generate charts
-* Add filtering
-* Improve dashboard
+* Calculate sales statistics
+* Analyze product categories
+* Analyze regions
+* Analyze discounts
+* Analyze customer demographics
+* Analyze sales representatives
+* Analyze sales trends
 
-### Phase 4 — Agentic AI
+## Phase 4 — Visualization
+
+* Product-category charts
+* Regional sales charts
+* Sales trend charts
+* Customer demographic charts
+* Discount vs sales visualization
+
+## Phase 5 — Agentic AI
 
 * Create LangGraph workflow
-* Add analysis tools
+* Create retail analysis tools
 * Connect LLM
 * Implement tool selection
+* Implement natural-language questions
 * Generate AI insights
 
-### Phase 5 — Testing
+## Phase 6 — Testing
 
-* Test different datasets
-* Test different questions
-* Handle invalid files
-* Handle missing data
+* Test valid retail datasets
+* Test invalid datasets
+* Test missing values
+* Test duplicate records
+* Test different user questions
+* Test agent tool selection
 * Improve error handling
 
-### Phase 6 — Deployment
+## Phase 7 — Deployment
 
-* Deploy frontend/application
-* Configure environment variables
-* Test production version
+* Configure production environment
+* Add environment variables
+* Deploy application
+* Test deployed application
 
 ---
 
-# 20. Conclusion
+# 27. Conclusion
 
-The **Autonomous Data Analyst Agent** combines traditional data-analysis techniques with Agentic AI.
+The **Autonomous Retail Sales Analyst Agent** combines Agentic AI with traditional retail data analysis.
 
-Instead of simply providing an AI chatbot, the system gives the AI agent access to real data-analysis tools. The agent can determine what actions are required, execute those actions, interpret the results, and communicate the findings to the user.
+Unlike a simple chatbot, the system can understand a user's retail-analysis request, determine what analysis is required, select the appropriate data-analysis tool, execute the analysis, interpret the results, and generate a natural-language response.
 
-The project demonstrates how **LLMs, agents, tools, data processing, and visualization** can work together to automate a real-world data-analysis workflow.
+The project is intentionally restricted to a **Retail Sales domain** with a fixed dataset structure containing:
 
+```text
+Sales_ID
+Product_Category
+Sales_Amount
+Discount
+Sales_Region
+Date_of_Sale
+Customer_Age
+Customer_Gender
+Sales_Representative
+```
+
+The project demonstrates how **LLMs, LangChain, LangGraph, Pandas, visualization tools, and structured retail data** can work together to create an autonomous retail analytics system.
