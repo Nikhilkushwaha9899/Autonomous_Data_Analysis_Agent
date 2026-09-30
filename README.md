@@ -1,193 +1,93 @@
-# Autonomous Retail Sales Analyst Agent
+# Autonomous Data Analysis Agent
 
-An **Agentic AI application** for analyzing retail sales data using natural-language queries. The system uses an LLM with LangGraph, LangChain, and Python data-analysis tools to select and perform the required analysis.
+Upload a CSV, Excel or JSON file, ask a question in plain English, and get the answer, a table, a chart and a short explanation.
 
-## Domain
+**Key idea:** the LLM only *plans* the analysis. Every number is computed locally with pandas, so results come from your data, not from the model.
 
-**Retail Sales Analytics**
+## Use Cases (E-Commerce)
 
-The system uses a predefined retail sales dataset with these 9 attributes:
+Built and tested on an Amazon products dataset (`amazon.csv`) and a 100k-row sales dataset (`sales_100k.csv`).
 
-```text
-Sales_ID
-Product_Category
-Sales_Amount
-Discount
-Sales_Region
-Date_of_Sale
-Customer_Age
-Customer_Gender
-Sales_Representative
-```
-
-## Main Use Cases
-
-* Overall sales analysis
-* Product category performance
-* Regional sales analysis
-* Discount vs. sales analysis
-* Customer age and gender analysis
-* Sales representative performance
-* Monthly sales trends
-* Missing-value and duplicate checking
-* Automatic generation of retail insights
+| Area | Example question |
+| ---- | ---------------- |
+| Pricing | What is the average discounted_price? |
+| Category performance | Which categories have the highest average rating? |
+| Popular products | Find the top 10 products by rating_count |
+| Discount analysis | Show products with discount_percentage above 60 |
+| Price vs. rating | What is the correlation between actual_price and rating? |
+| Revenue by category | Which Product_Category has the highest total Sales_Amount? |
+| Regional sales | Which Sales_Region has the most sales? |
+| Sales trends | Show monthly Sales_Amount trend |
+| Sales reps | Who are the top 10 Sales_Representative by sales? |
+| Data quality | How many records are in the dataset? (plus an automatic duplicate / missing-value report) |
 
 ## System Architecture
 
 ```text
-                    USER
-                      │
-                      ▼
-                 ┌─────────┐
-                 │ main.py │
-                 │Streamlit│
-                 └────┬────┘
-                      │
-                      ▼
-            ┌──────────────────┐
-            │ orchestrator.py  │
-            │                  │
-            │ LangGraph        │
-            │ LangChain        │
-            │ LLM              │
-            │ Tool Calling     │
-            └────────┬─────────┘
-                     │
-                     ▼
-              ┌─────────────┐
-              │  helper.py  │
-              │             │
-              │ Pandas      │
-              │ NumPy       │
-              │ Analysis    │
-              │ Charts      │
-              └──────┬──────┘
-                     │
-                     ▼
-            ┌─────────────────┐
-            │ Retail Dataset  │
-            │                 │
-            │ retail_sales   │
-            │     .csv        │
-            └────────┬────────┘
-                     │
-                     ▼
-              Analysis Result
-                     │
-                     ▼
-              LLM Interpretation
-                     │
-                     ▼
-               Final Response
+                 USER
+                   │  upload file + question
+                   ▼
+        ┌─────────────────────┐
+        │  main.py (Streamlit)│  UI, example questions, results, JSON download
+        └──────────┬──────────┘
+                   ▼
+        ┌─────────────────────┐        ┌───────────────┐
+        │   orchestrator.py   │◄──────►│  Gemini API   │
+        │  plan → execute →   │        │ (plan+explain)│
+        │  explain            │        └───────────────┘
+        └──────────┬──────────┘
+                   ▼
+        ┌─────────────────────┐
+        │      helper.py      │  load, profile, clean, statistics
+        │   pandas / NumPy    │
+        └──────────┬──────────┘
+                   ▼
+           data/uploads/*.csv
 ```
 
-### Workflow
+## Agent Workflow
 
 ```text
-User Query
-    ↓
-main.py
-    ↓
-orchestrator.py
-    ↓
-Understand Query
-    ↓
-Select Appropriate Tool
-    ↓
-helper.py
-    ↓
-Pandas / NumPy / Visualization
-    ↓
-LLM Interpretation
-    ↓
-Final Answer
+1. Load       read CSV / Excel / JSON
+2. Profile    rows, columns, types, missing values, duplicates
+3. Clean      drop duplicates, ₹1,099 / 64% → numbers, parse dates, fill missing values
+4. Plan       Gemini converts the question into a JSON plan
+              e.g. {"operation": "group_by", "group_column": "category", ...}
+5. Execute    plan is validated (column exists? numeric?) and run with pandas
+6. Explain    Gemini writes a 2–3 sentence insight (built-in summary if the call fails)
+7. Display    insight + table + chart + data-quality report + JSON download
 ```
 
-## Project Structure
+Supported operations: `average`, `sum`, `minimum`, `maximum`, `count`, `describe`, `top_n`, `group_by`, `filter`, `correlation`, `time_trend`.
+
+Reliability: retry with backoff on rate limits, automatic fallback to the next Gemini model, and clear messages for a missing API key or a wrong column name.
+
+## Structure
 
 ```text
-autonomous-retail-sales-agent/
-│
-├── venv/
-├── data/
-│   └── retail_sales.csv
-│
-├── main.py
-├── helper.py
-├── orchestrator.py
-│
-├── .env
-├── .gitignore
-├── requirements.txt
-└── README.md
+├── main.py           Streamlit UI
+├── orchestrator.py   Planning + execution + insight
+├── helper.py         Loading, cleaning, UI helpers
+├── test.py           Test suite
+├── data/uploads/     Datasets
+├── .env              API key (not committed)
+└── requirements.txt
 ```
 
-### File Responsibilities
-
-| File               | Purpose                                             |
-| ------------------ | --------------------------------------------------- |
-| `main.py`          | Streamlit UI and application entry point            |
-| `helper.py`        | Common retail-analysis functions                    |
-| `orchestrator.py`  | LangGraph/LangChain agent workflow and tool calling |
-| `data/`            | Retail sales dataset                                |
-| `.env`             | API keys and environment variables                  |
-| `requirements.txt` | Python dependencies                                 |
-
-## Technology Stack
-
-* **Python**
-* **LangGraph** — agent workflow
-* **LangChain** — LLM/tool integration
-* **OpenAI API** — language model
-* **Pandas & NumPy** — data analysis
-* **Matplotlib & Seaborn** — visualization
-* **Streamlit** — user interface
-* **python-dotenv** — environment variables
-
-## Prerequisites
-
-* Python 3.10+
-* Git
-* OpenAI API key
-* Retail Sales CSV dataset
-
-## Installation
-
-### 1. Create Virtual Environment
+## Setup
 
 ```bash
 python -m venv venv
-```
-
-### 2. Activate
-
-**Windows CMD:**
-
-```bash
 venv\Scripts\activate
-```
-
-**PowerShell:**
-
-```powershell
-venv\Scripts\Activate.ps1
-```
-
-### 3. Install Dependencies
-
-```bash
 pip install -r requirements.txt
 ```
-
-### 4. Configure API Key
 
 Create `.env`:
 
 ```env
-OPENAI_API_KEY=your_api_key_here
+GOOGLE_API_KEY=your_api_key_here
+# optional: GEMINI_MODELS=gemini-3.5-flash,gemini-2.5-flash
 ```
-
-Do not upload `.env` to GitHub.
 
 ## Run
 
@@ -195,6 +95,10 @@ Do not upload `.env` to GitHub.
 streamlit run main.py
 ```
 
-## Objective
+## Test
 
-To develop a **domain-specific Agentic AI system** that autonomously analyzes retail sales data, answers natural-language questions, generates relevant visualizations, and provides meaningful retail sales insights.
+```bash
+python test.py
+```
+
+Gemini is mocked, so tests run offline without a key. Set `RUN_LIVE_GEMINI=1` to also run a live API check.
