@@ -9,6 +9,4 @@ venv/
 # Python cache
 __pycache__/
 *.py[cod]
-
-# Synopsis
-Autonomous_Retail_Sales_Analyst_Synopsis.docx
+.pytest_cache/
