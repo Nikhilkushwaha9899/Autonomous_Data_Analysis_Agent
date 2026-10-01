@@ -1,16 +1,3 @@
-"""Split-screen UI for the Autonomous Data Analysis Agent.
-
-Run with:   streamlit run main_split.py
-
-Left partition  : upload, dataset summary, question box, suggestions, history.
-Right partition : answer, chart, table, plan, data quality, data preview.
-
-This file is an alternative front end. It only *imports* helper.py and
-orchestrator.py; main.py, orchestrator.py, helper.py, test.py and
-.streamlit/config.toml are untouched, and the original UI still works with
-`streamlit run main.py`.
-"""
-
 import html
 import json
 import os
