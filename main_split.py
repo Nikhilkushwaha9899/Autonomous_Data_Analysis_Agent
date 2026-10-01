@@ -35,7 +35,7 @@ PANE_HEIGHT = 770  # px height of each partition; lower it on small screens
 
 st.set_page_config(
     page_title="Autonomous Data Analysis Agent",
-    page_icon="📊",
+    page_icon="🤖",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
