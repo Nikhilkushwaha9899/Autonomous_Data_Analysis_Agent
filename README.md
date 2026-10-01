@@ -27,9 +27,9 @@ Built and tested on an Amazon products dataset (`amazon.csv`) and a 100k-row sal
                  USER
                    │  upload file + question
                    ▼
-        ┌─────────────────────┐
-        │  main.py (Streamlit)│  UI, example questions, results, JSON download
-        └──────────┬──────────┘
+        ┌─────────────────────────┐
+        │  main.py & main_split.py│  UI, example questions, results, JSON download
+        └──────────┬──────────────┘
                    ▼
         ┌─────────────────────┐        ┌───────────────┐
         │   orchestrator.py   │◄──────►│  Gemini API   │
@@ -65,7 +65,7 @@ Reliability: retry with backoff on rate limits, automatic fallback to the next G
 ## Structure
 
 ```text
-├── main.py           Streamlit UI
+├── main.py & main_split.py         Streamlit UI
 ├── orchestrator.py   Planning + execution + insight
 ├── helper.py         Loading, cleaning, UI helpers
 ├── test.py           Test suite
@@ -92,7 +92,7 @@ GOOGLE_API_KEY=your_api_key_here
 ## Run
 
 ```bash
-streamlit run main.py
+ streamlit run main_split.py  
 ```
 
 ## Test
