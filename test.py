@@ -685,7 +685,7 @@ class TestStreamlitUI:
         from streamlit.testing.v1 import AppTest
         monkeypatch.delenv("GOOGLE_API_KEY", raising=False)
         monkeypatch.delenv("GEMINI_API_KEY", raising=False)
-        at = AppTest.from_file(os.path.join(ROOT, "main.py"), default_timeout=30).run()
+        at = AppTest.from_file(os.path.join(ROOT, "main_split.py"), default_timeout=30).run()
         assert not at.exception
         assert "Autonomous Data Analysis Agent" in at.title[0].value
         assert any("Upload a file" in i.value for i in at.info)
@@ -723,7 +723,7 @@ class TestStreamlitUI:
             return self._fake_result(question)
 
         monkeypatch.setattr(orchestrator, "run_agent", fake_run_agent)
-        at = AppTest.from_file(os.path.join(ROOT, "main.py"), default_timeout=30).run()
+        at = AppTest.from_file(os.path.join(ROOT, "main_split.py"), default_timeout=30).run()
         at.file_uploader[0].upload("../my data (1).csv", self.CSV, "text/csv").run()
         assert not at.exception
         return at, calls, tmp_path
@@ -785,13 +785,13 @@ class TestStreamlitUI:
     def test_unreadable_file_shows_error(self, tmp_path, monkeypatch):
         from streamlit.testing.v1 import AppTest
         monkeypatch.chdir(tmp_path)
-        at = AppTest.from_file(os.path.join(ROOT, "main.py"), default_timeout=30).run()
+        at = AppTest.from_file(os.path.join(ROOT, "main_split.py"), default_timeout=30).run()
         at.file_uploader[0].upload("empty.csv", b"a,b\n", "text/csv").run()
         assert not at.exception
         assert any("Could not read" in e.value for e in at.error)
 
     def test_app_source_has_no_deprecated_api(self):
-        with open(os.path.join(ROOT, "main.py"), encoding="utf-8") as fh:
+        with open(os.path.join(ROOT, "main_split.py"), encoding="utf-8") as fh:
             assert "use_container_width" not in fh.read()
 
 
