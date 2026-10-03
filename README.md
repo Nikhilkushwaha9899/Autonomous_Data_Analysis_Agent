@@ -27,9 +27,9 @@ Built and tested on an Amazon products dataset (`amazon.csv`) and a 100k-row sal
                  USER
                    │  upload file + question
                    ▼
-        ┌─────────────────────────┐
-        │  main.py & main_split.py│  UI, example questions, results, JSON download
-        └──────────┬──────────────┘
+        ┌──────────────────┐
+        │  main_split.py   │  UI, example questions, results, JSON download
+        └──────────┬───────┘
                    ▼
         ┌─────────────────────┐        ┌───────────────┐
         │   orchestrator.py   │◄──────►│  Gemini API   │
@@ -65,7 +65,7 @@ Reliability: retry with backoff on rate limits, automatic fallback to the next G
 ## Structure
 
 ```text
-├── main.py & main_split.py         Streamlit UI
+├── main_split.py     Streamlit UI
 ├── orchestrator.py   Planning + execution + insight
 ├── helper.py         Loading, cleaning, UI helpers
 ├── test.py           Test suite
